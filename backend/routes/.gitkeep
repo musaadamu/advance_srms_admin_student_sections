@@ -1,0 +1,6 @@
+# This file ensures the routes directory is tracked by git
+# Route files will be created here for:
+# - auth.js (authentication routes)
+# - students.js (student management routes)
+# - staff.js (staff management routes)
+# - courses.js (course management routes)

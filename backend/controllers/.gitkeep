@@ -1,0 +1,6 @@
+# This file ensures the controllers directory is tracked by git
+# Controller files will be created here for:
+# - authController.js (authentication logic)
+# - studentController.js (student management logic)
+# - staffController.js (staff management logic)
+# - courseController.js (course management logic)
