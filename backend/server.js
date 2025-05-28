@@ -51,6 +51,7 @@ app.use('/api/payments', require('./routes/payments'));
 app.use('/api/bulk-upload', require('./routes/bulkUpload'));
 app.use('/api/course-assignments', require('./routes/courseAssignments'));
 app.use('/api/results', require('./routes/results'));
+app.use('/api/statistics', require('./routes/statistics'));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
