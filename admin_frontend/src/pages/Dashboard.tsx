@@ -13,64 +13,15 @@ import DashboardWidgets from '@/components/dashboard/DashboardWidgets'
 const Dashboard = () => {
   const { user } = useAuthStore()
   const userRoleInfo = user ? getRoleByName(user.role) : null
-  const { data: userStats } = useQuery({
-    queryKey: ['user-stats'],
-    queryFn: async () => {
-      const response = await api.get('/users/stats')
-      return response.data.data
-    }
-  })
 
-  const { data: studentStats } = useQuery({
-    queryKey: ['student-stats'],
+  const { data: dashboardStats } = useQuery({
+    queryKey: ['dashboard-stats'],
     queryFn: async () => {
-      const response = await api.get('/students/stats')
+      const response = await api.get('/statistics/dashboard')
       return response.data.data
-    }
+    },
+    enabled: !!user
   })
-
-  const { data: courseStats } = useQuery({
-    queryKey: ['course-stats'],
-    queryFn: async () => {
-      const response = await api.get('/courses/stats')
-      return response.data.data
-    }
-  })
-
-  const stats = [
-    {
-      name: 'Total Users',
-      value: userStats?.totalUsers || 0,
-      icon: UsersIcon,
-      color: 'bg-blue-500',
-      change: '+12%',
-      changeType: 'positive'
-    },
-    {
-      name: 'Active Students',
-      value: studentStats?.activeStudents || 0,
-      icon: AcademicCapIcon,
-      color: 'bg-green-500',
-      change: '+8%',
-      changeType: 'positive'
-    },
-    {
-      name: 'Total Courses',
-      value: courseStats?.totalCourses || 0,
-      icon: BookOpenIcon,
-      color: 'bg-purple-500',
-      change: '+3%',
-      changeType: 'positive'
-    },
-    {
-      name: 'Active Courses',
-      value: courseStats?.activeCourses || 0,
-      icon: ChartBarIcon,
-      color: 'bg-orange-500',
-      change: '+5%',
-      changeType: 'positive'
-    }
-  ]
 
   return (
     <div>
@@ -128,69 +79,27 @@ const Dashboard = () => {
         <div className="card">
           <div className="flow-root">
             <ul className="-mb-8">
-              <li>
-                <div className="relative pb-8">
-                  <div className="relative flex space-x-3">
-                    <div>
-                      <span className="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center ring-8 ring-white">
-                        <UsersIcon className="h-5 w-5 text-white" />
-                      </span>
-                    </div>
-                    <div className="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+              {dashboardStats?.recentActivity?.map((activity: any) => (
+                <li key={activity._id}>
+                  <div className="relative pb-8">
+                    <div className="relative flex space-x-3">
                       <div>
-                        <p className="text-sm text-gray-500">
-                          New student <span className="font-medium text-gray-900">John Doe</span> registered
-                        </p>
+                        <span className="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center ring-8 ring-white">
+                          <UsersIcon className="h-5 w-5 text-white" />
+                        </span>
                       </div>
-                      <div className="text-right text-sm whitespace-nowrap text-gray-500">
-                        2 hours ago
+                      <div className="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                        <div>
+                          <p className="text-sm text-gray-500">{activity.message}</p>
+                        </div>
+                        <div className="text-right text-sm whitespace-nowrap text-gray-500">
+                          {new Date(activity.createdAt).toLocaleString()}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </li>
-              <li>
-                <div className="relative pb-8">
-                  <div className="relative flex space-x-3">
-                    <div>
-                      <span className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white">
-                        <BookOpenIcon className="h-5 w-5 text-white" />
-                      </span>
-                    </div>
-                    <div className="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
-                      <div>
-                        <p className="text-sm text-gray-500">
-                          Course <span className="font-medium text-gray-900">CS101</span> was updated
-                        </p>
-                      </div>
-                      <div className="text-right text-sm whitespace-nowrap text-gray-500">
-                        4 hours ago
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <div className="relative">
-                  <div className="relative flex space-x-3">
-                    <div>
-                      <span className="h-8 w-8 rounded-full bg-purple-500 flex items-center justify-center ring-8 ring-white">
-                        <AcademicCapIcon className="h-5 w-5 text-white" />
-                      </span>
-                    </div>
-                    <div className="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
-                      <div>
-                        <p className="text-sm text-gray-500">
-                          <span className="font-medium text-gray-900">25 students</span> enrolled in new courses
-                        </p>
-                      </div>
-                      <div className="text-right text-sm whitespace-nowrap text-gray-500">
-                        1 day ago
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </li>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

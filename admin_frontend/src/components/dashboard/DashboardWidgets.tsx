@@ -1,6 +1,8 @@
 import React from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { useAuthStore } from '@/hooks/useAuthStore'
 import { getDashboardWidgets } from '@/config/roles'
+import api from '@/services/authService'
 import {
   UsersIcon,
   AcademicCapIcon,
@@ -67,10 +69,48 @@ const DashboardWidget: React.FC<DashboardWidgetProps> = ({
 
 const DashboardWidgets: React.FC = () => {
   const { user } = useAuthStore()
-  
+
   if (!user) return null
 
   const allowedWidgets = getDashboardWidgets(user.role)
+
+  // Fetch dashboard statistics
+  const { data: dashboardStats } = useQuery({
+    queryKey: ['dashboard-stats'],
+    queryFn: async () => {
+      const response = await api.get('/statistics/dashboard')
+      return response.data.data
+    },
+    enabled: !!user
+  })
+
+  // Fetch individual stats for fallback
+  const { data: userStats } = useQuery({
+    queryKey: ['user-stats'],
+    queryFn: async () => {
+      const response = await api.get('/users/stats')
+      return response.data.data
+    },
+    enabled: !!user
+  })
+
+  const { data: studentStats } = useQuery({
+    queryKey: ['student-stats'],
+    queryFn: async () => {
+      const response = await api.get('/students/stats')
+      return response.data.data
+    },
+    enabled: !!user
+  })
+
+  const { data: courseStats } = useQuery({
+    queryKey: ['course-stats'],
+    queryFn: async () => {
+      const response = await api.get('/courses/stats')
+      return response.data.data
+    },
+    enabled: !!user
+  })
 
   const renderWidget = (widgetType: string) => {
     switch (widgetType) {
@@ -91,7 +131,7 @@ const DashboardWidgets: React.FC = () => {
           <DashboardWidget
             key="user_statistics"
             title="Total Users"
-            value="2,847"
+            value={dashboardStats?.users?.total || userStats?.totalUsers || 0}
             subtitle="Active users"
             icon={UsersIcon}
             color="text-blue-600"
@@ -104,7 +144,7 @@ const DashboardWidgets: React.FC = () => {
           <DashboardWidget
             key="academic_overview"
             title="Active Courses"
-            value="156"
+            value={dashboardStats?.academic?.courses?.active || courseStats?.activeCourses || 0}
             subtitle="This semester"
             icon={BookOpenIcon}
             color="text-purple-600"
@@ -116,7 +156,10 @@ const DashboardWidgets: React.FC = () => {
           <DashboardWidget
             key="financial_summary"
             title="Fee Collection"
-            value="₦45.2M"
+            value={dashboardStats?.financial?.summary?.paidAmount ?
+              `₦${(dashboardStats.financial.summary.paidAmount / 1000000).toFixed(1)}M` :
+              '₦0'
+            }
             subtitle="This semester"
             icon={CurrencyDollarIcon}
             color="text-green-600"
@@ -129,7 +172,7 @@ const DashboardWidgets: React.FC = () => {
           <DashboardWidget
             key="student_statistics"
             title="Total Students"
-            value="12,456"
+            value={dashboardStats?.users?.students || studentStats?.totalStudents || 0}
             subtitle="Enrolled students"
             icon={AcademicCapIcon}
             color="text-indigo-600"
@@ -142,8 +185,8 @@ const DashboardWidgets: React.FC = () => {
           <DashboardWidget
             key="enrollment_overview"
             title="New Enrollments"
-            value="1,234"
-            subtitle="This semester"
+            value={studentStats?.newThisMonth || 0}
+            subtitle="This month"
             icon={AcademicCapIcon}
             color="text-blue-600"
           />
@@ -154,7 +197,7 @@ const DashboardWidgets: React.FC = () => {
           <DashboardWidget
             key="department_overview"
             title="Department Staff"
-            value="24"
+            value={dashboardStats?.department?.staff || 0}
             subtitle="Active faculty"
             icon={BuildingOfficeIcon}
             color="text-orange-600"
@@ -166,7 +209,7 @@ const DashboardWidgets: React.FC = () => {
           <DashboardWidget
             key="course_assignments"
             title="Course Assignments"
-            value="18"
+            value={dashboardStats?.academic?.assignments || 0}
             subtitle="This semester"
             icon={ClipboardDocumentListIcon}
             color="text-purple-600"
@@ -178,7 +221,7 @@ const DashboardWidgets: React.FC = () => {
           <DashboardWidget
             key="examination_overview"
             title="Upcoming Exams"
-            value="12"
+            value={dashboardStats?.exams?.upcoming || 0}
             subtitle="Next 30 days"
             icon={ClipboardDocumentListIcon}
             color="text-red-600"
@@ -190,7 +233,7 @@ const DashboardWidgets: React.FC = () => {
           <DashboardWidget
             key="results_processing"
             title="Pending Results"
-            value="45"
+            value={dashboardStats?.results?.pending || 0}
             subtitle="Awaiting approval"
             icon={DocumentTextIcon}
             color="text-yellow-600"
@@ -201,9 +244,12 @@ const DashboardWidgets: React.FC = () => {
         return (
           <DashboardWidget
             key="payment_overview"
-            title="Payments Today"
-            value="₦2.4M"
-            subtitle="156 transactions"
+            title="Monthly Payments"
+            value={dashboardStats?.financial?.monthly?.monthlyTotal ?
+              `₦${(dashboardStats.financial.monthly.monthlyTotal / 1000000).toFixed(1)}M` :
+              '₦0'
+            }
+            subtitle={`${dashboardStats?.financial?.monthly?.monthlyCount || 0} transactions`}
             icon={CurrencyDollarIcon}
             color="text-green-600"
           />
@@ -214,8 +260,11 @@ const DashboardWidgets: React.FC = () => {
           <DashboardWidget
             key="outstanding_payments"
             title="Outstanding Fees"
-            value="₦12.8M"
-            subtitle="2,145 students"
+            value={dashboardStats?.financial?.summary?.pendingAmount ?
+              `₦${(dashboardStats.financial.summary.pendingAmount / 1000000).toFixed(1)}M` :
+              '₦0'
+            }
+            subtitle={`${dashboardStats?.financial?.payments?.pending || 0} pending`}
             icon={CurrencyDollarIcon}
             color="text-red-600"
           />
@@ -226,7 +275,7 @@ const DashboardWidgets: React.FC = () => {
           <DashboardWidget
             key="student_activities"
             title="Active Programs"
-            value="28"
+            value={dashboardStats?.programs?.active || 0}
             subtitle="Student activities"
             icon={HeartIcon}
             color="text-pink-600"
@@ -238,7 +287,7 @@ const DashboardWidgets: React.FC = () => {
           <DashboardWidget
             key="academic_calendar"
             title="Calendar Events"
-            value="15"
+            value={dashboardStats?.calendar?.events || 0}
             subtitle="This month"
             icon={CalendarIcon}
             color="text-indigo-600"
@@ -250,7 +299,7 @@ const DashboardWidgets: React.FC = () => {
           <DashboardWidget
             key="my_courses"
             title="My Courses"
-            value="6"
+            value={dashboardStats?.lecturer?.courses || 0}
             subtitle="This semester"
             icon={BookOpenIcon}
             color="text-blue-600"
@@ -262,7 +311,7 @@ const DashboardWidgets: React.FC = () => {
           <DashboardWidget
             key="assigned_students"
             title="My Students"
-            value="245"
+            value={dashboardStats?.lecturer?.students || 0}
             subtitle="Across all courses"
             icon={AcademicCapIcon}
             color="text-green-600"
@@ -274,7 +323,7 @@ const DashboardWidgets: React.FC = () => {
           <DashboardWidget
             key="results_pending"
             title="Results Pending"
-            value="3"
+            value={dashboardStats?.lecturer?.pendingResults || 0}
             subtitle="Courses to grade"
             icon={DocumentTextIcon}
             color="text-orange-600"
