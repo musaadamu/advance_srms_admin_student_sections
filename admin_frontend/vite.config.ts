@@ -29,11 +29,12 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: 'dist',
+    outDir: 'build',
     sourcemap: true,
   },
-  define: {
-    'process.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL || 'http://localhost:5000/api'),
-    'process.env.VITE_APP_NAME': JSON.stringify('College Management - Admin'),
-  },
+  // Removed define section to avoid issues with process.env in Vite
+  // define: {
+  //   'process.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL || 'http://localhost:5000/api'),
+  //   'process.env.VITE_APP_NAME': JSON.stringify('College Management - Admin'),
+  // },
 })
