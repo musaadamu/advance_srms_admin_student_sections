@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { apiClient } from '../api/config'
 
 export interface User {
@@ -38,10 +38,10 @@ export const loginUser = createAsyncThunk(
     try {
       const response = await apiClient.post('/auth/login', credentials)
       const { user, token } = response.data.data
-      
+
       localStorage.setItem('token', token)
       localStorage.setItem('user', JSON.stringify(user))
-      
+
       return { user, token }
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Login failed')

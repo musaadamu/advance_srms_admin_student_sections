@@ -24,7 +24,7 @@ import {
   PencilIcon,
   TrashIcon,
   XMarkIcon,
-  CheckIcon,
+  // CheckIcon,
   ExclamationTriangleIcon,
   LockClosedIcon,
   UserPlusIcon
@@ -303,9 +303,9 @@ const UserModal = ({ user, isOpen, onClose, mode }: UserModalProps) => {
 
 const Users = () => {
   const [activeTab, setActiveTab] = useState<'staff' | 'students' | 'password-reset' | 'assign-roles'>('staff')
-  const [search, setSearch] = useState('')
-  const [roleFilter, setRoleFilter] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
+  // const [search, setSearch] = useState('')
+  // const [roleFilter, setRoleFilter] = useState('')
+  // const [statusFilter, setStatusFilter] = useState('')
   const [selectedUser, setSelectedUser] = useState<any>(null)
   const [modalMode, setModalMode] = useState<'create' | 'edit' | 'view'>('create')
   const [showModal, setShowModal] = useState(false)
