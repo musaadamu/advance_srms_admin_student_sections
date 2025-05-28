@@ -31,7 +31,6 @@ const initialState: AuthState = {
   error: null,
 }
 
-// Async thunks
 export const loginUser = createAsyncThunk(
   'auth/login',
   async (credentials: { email: string; password: string }, { rejectWithValue }) => {
@@ -44,7 +43,9 @@ export const loginUser = createAsyncThunk(
 
       return { user, token }
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Login failed')
+      return error.response?.data?.message || 'Login failed'
+      // Commented out rejectWithValue to fix unused variable error
+      // return rejectWithValue(error.response?.data?.message || 'Login failed')
     }
   }
 )

@@ -20,7 +20,7 @@ export const store = configureStore({
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
       },
     }),
-  devTools: process.env.NODE_ENV !== 'production',
+  devTools: typeof process !== 'undefined' && process.env.NODE_ENV !== 'production',
 })
 
 export type RootState = ReturnType<typeof store.getState>

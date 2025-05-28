@@ -1,6 +1,9 @@
 import axios from 'axios'
 import { LoginCredentials, User } from '@/types'
 
+// Commenting out unused type to fix lint error
+// type AuthResponse = { user: User; token: string }
+
 const API_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:5000/api'
 
 // Create axios instance with default config

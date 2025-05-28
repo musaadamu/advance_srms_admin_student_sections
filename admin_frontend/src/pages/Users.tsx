@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { toast } from 'react-hot-toast'
 import { useAppDispatch, useAppSelector } from '../store'
 import {
@@ -10,10 +10,10 @@ import {
   updateUserRole,
   resetUserPassword,
   setFilters,
-  clearError
+  // clearError
 } from '../store/slices/userSlice'
 import {
-  PlusIcon,
+  // PlusIcon,
   MagnifyingGlassIcon,
   UsersIcon,
   AcademicCapIcon,

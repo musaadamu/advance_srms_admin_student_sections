@@ -13,7 +13,7 @@ import {
   DocumentTextIcon,
   PrinterIcon,
   XMarkIcon,
-  SaveIcon,
+  // SaveIcon,
   EyeIcon,
   PencilIcon,
   TrashIcon
@@ -254,13 +254,20 @@ const StudentModal = ({ student, isOpen, onClose, mode }: StudentModalProps) => 
   }
 
   const updateFormData = (section: string, field: string, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      [section]: {
-        ...prev[section as keyof StudentFormData],
-        [field]: value
+    setFormData(prev => {
+      const sectionValue = prev[section as keyof StudentFormData];
+      if (typeof sectionValue !== 'object' || sectionValue === null) {
+        // If section is not an object, return prev without changes to avoid spread error
+        return prev;
       }
-    }))
+      return {
+        ...prev,
+        [section]: {
+          ...sectionValue,
+          [field]: value
+        }
+      };
+    });
   }
 
   const tabs = [
@@ -1105,10 +1112,10 @@ const StudentModal = ({ student, isOpen, onClose, mode }: StudentModalProps) => 
             </button>
             <button
               type="submit"
-              disabled={mutation.isPending}
+              disabled={mutation.isLoading}
               className="btn-primary flex-1"
             >
-              {mutation.isPending ? 'Saving...' : mode === 'create' ? 'Add Student' : 'Update Student'}
+              {mutation.isLoading ? 'Saving...' : mode === 'create' ? 'Add Student' : 'Update Student'}
             </button>
           </div>
         </form>
@@ -1125,7 +1132,7 @@ const Students = () => {
   const [selectedStudent, setSelectedStudent] = useState<any>(null)
   const [modalMode, setModalMode] = useState<'create' | 'edit' | 'view'>('create')
   const [showModal, setShowModal] = useState(false)
-  const printRef = useRef<HTMLDivElement>(null)
+  // const printRef = useRef<HTMLDivElement>(null)
 
   const queryClient = useQueryClient()
 
