@@ -8,6 +8,6 @@
     "start": "node backend/server.js"
   },
   "devDependencies": {
-    "@types/node": "^22.15.23"
+    "@types/node": "^22.15.29"
   }
 }

@@ -434,8 +434,18 @@ const ResultsEntryTab = ({
                     {studentResult.result?.totalScore?.toFixed(1) || 'N/A'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {studentResult.result?.grade ? (
-                      <span className={`text-sm font-medium ${getGradeColor(studentResult.result.grade)}`}>
+                  {studentResult.result?.grade ? (
+                      <span className={`text-sm font-medium ${
+                        ['A+', 'A', 'A-'].includes(studentResult.result.grade)
+                          ? 'text-green-600'
+                          : ['B+', 'B', 'B-'].includes(studentResult.result.grade)
+                          ? 'text-blue-600'
+                          : ['C+', 'C', 'C-'].includes(studentResult.result.grade)
+                          ? 'text-yellow-600'
+                          : ['D+', 'D'].includes(studentResult.result.grade)
+                          ? 'text-orange-600'
+                          : 'text-red-600'
+                      }`}>
                         {studentResult.result.grade}
                       </span>
                     ) : (
@@ -690,14 +700,6 @@ const ResultEntryModal = ({ student, onSave, onClose }: ResultEntryModalProps) =
       </div>
     </div>
   )
-}
-
-const getGradeColor = (grade: string) => {
-  if (['A+', 'A', 'A-'].includes(grade)) return 'text-green-600'
-  if (['B+', 'B', 'B-'].includes(grade)) return 'text-blue-600'
-  if (['C+', 'C', 'C-'].includes(grade)) return 'text-yellow-600'
-  if (['D+', 'D'].includes(grade)) return 'text-orange-600'
-  return 'text-red-600'
 }
 
 export default ResultsUpload

@@ -2,8 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import {
   UsersIcon,
   AcademicCapIcon,
-  BookOpenIcon,
-  ChartBarIcon
+  BookOpenIcon
 } from '@heroicons/react/24/outline'
 import api from '@/services/authService'
 import { useAuthStore } from '@/hooks/useAuthStore'

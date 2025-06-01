@@ -113,17 +113,17 @@ const CourseModal = ({ course, isOpen, onClose, mode }: CourseModalProps) => {
     }))
   }
 
-  const removeSession = (index: number) => {
+const removeSession = (index: number) => {
     setFormData(prev => ({
       ...prev,
-      sessions: prev.sessions.filter((_, i) => i !== index)
+      sessions: prev.sessions.filter((_, i: number) => i !== index)
     }))
   }
 
   const updateSession = (index: number, field: string, value: any) => {
     setFormData(prev => ({
       ...prev,
-      sessions: prev.sessions.map((session, i) =>
+      sessions: prev.sessions.map((session, i: number) =>
         i === index
           ? { ...session, [field]: value }
           : session
@@ -443,7 +443,7 @@ const CourseModal = ({ course, isOpen, onClose, mode }: CourseModalProps) => {
                     </button>
                   </div>
                   <div className="space-y-3">
-                    {formData.sessions.map((session, index) => (
+              {formData.sessions.map((session, index: number) => (
                       <div key={index} className="p-3 border border-gray-200 rounded-lg">
                         <div className="grid grid-cols-2 gap-3 mb-3">
                           <select
@@ -522,10 +522,10 @@ const CourseModal = ({ course, isOpen, onClose, mode }: CourseModalProps) => {
               </button>
               <button
                 type="submit"
-                disabled={mutation.isPending}
+                disabled={mutation.isLoading}
                 className="btn-primary flex-1"
               >
-                {mutation.isPending ? 'Saving...' : mode === 'create' ? 'Create Course' : 'Update Course'}
+                {mutation.isLoading ? 'Saving...' : mode === 'create' ? 'Create Course' : 'Update Course'}
               </button>
             </div>
           </form>
